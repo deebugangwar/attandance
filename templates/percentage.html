@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Percentage</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e73df, #1cc88a);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 30px;
+            color: white;
+        }
+
+        button {
+            background-color: #f6c23e;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #dda20a;
+            transform: scale(1.05);
+        }
+
+        table {
+            width: 60%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        th {
+            background-color: #4e73df;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        a button {
+            background-color: #e74a3b;
+            color: white;
+        }
+
+        a button:hover {
+            background-color: #c0392b;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<h2>Attendance Percentage</h2>
+
+<button onclick="loadPercentage()">Load Percentage</button>
+
+<br><br>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Percentage</th>
+        </tr>
+    </thead>
+    <tbody id="percentageTable"></tbody>
+</table>
+
+<br><br>
+<a href="/"><button>Back</button></a>
+
+<script>
+
+function loadPercentage() {
+
+    fetch("/percentage")
+    .then(response => response.json())
+    .then(data => {
+
+        let table = document.getElementById("percentageTable");
+        table.innerHTML = "";
+
+        data.percentage.forEach(row => {
+
+            let tr = document.createElement("tr");
+
+            let td1 = document.createElement("td");
+            td1.innerText = row[0];
+
+            let td2 = document.createElement("td");
+            td2.innerText = row[1] + " %";
+
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+
+            table.appendChild(tr);
+        });
+
+    });
+}
+
+</script>
+
+</body>
+</html>

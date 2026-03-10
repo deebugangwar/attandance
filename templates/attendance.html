@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mark Attendance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="main-container">
+    <h2>Mark Attendance</h2>
+
+    <button onclick="startAttendance()">Start Attendance</button>
+
+    <p id="status" class="status"></p>
+
+    <br>
+    <a href="/"><button>Back to Home</button></a>
+</div>
+
+<script>
+function startAttendance() {
+
+    let status = document.getElementById("status");
+
+    status.innerText = "Opening Camera...";
+    status.className = "status yellow";
+
+    fetch("/start_attendance")
+    .then(res => res.json())
+    .then(data => {
+
+        status.innerText = data.message;
+
+        if (data.message.includes("Successfully"))
+            status.className = "status green";
+        else
+            status.className = "status red";
+    });
+}
+</script>
+
+</body>
+</html>
