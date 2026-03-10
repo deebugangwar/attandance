@@ -1,21 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>ERP Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+<h2>Face Attendance</h2>
 
-<div class="main-container">
-    <h1>Face Attendance ERP</h1>
+<input id="name" placeholder="Name">
+<input id="roll" placeholder="Roll">
 
-    <a href="/register_page"><button>Register Student</button></a>
-    <a href="/attendance_page"><button>Mark Attendance</button></a>
-    <a href="/table_page"><button>View Attendance List</button></a>
-    <a href="/percentage_page">
-    <button>Attendance Percentage</button>
-</a>
-</div>
+<br><br>
 
-</body>
-</html>
+<video id="video" width="400" autoplay></video>
+
+<canvas id="canvas" width="400" height="300" style="display:none"></canvas>
+
+<br>
+
+<button onclick="startCamera()">Start Camera</button>
+<button onclick="markAttendance()">Mark Attendance</button>
+
+<script src="/static/script.js"></script>
