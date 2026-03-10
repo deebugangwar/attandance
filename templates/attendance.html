@@ -1,42 +1,52 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Mark Attendance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+
 <body>
 
-<div class="main-container">
-    <h2>Mark Attendance</h2>
+<h2>Attendance Table</h2>
 
-    <button onclick="startAttendance()">Start Attendance</button>
+<table border="1" id="table">
 
-    <p id="status" class="status"></p>
+<tr>
+<th>Name</th>
+<th>Roll</th>
+<th>Date</th>
+<th>Time</th>
+</tr>
 
-    <br>
-    <a href="/"><button>Back to Home</button></a>
-</div>
+</table>
+
+<br>
+
+<a href="/download">Download CSV</a>
 
 <script>
-function startAttendance() {
 
-    let status = document.getElementById("status");
+fetch("/get_attendance")
+.then(res=>res.json())
+.then(data=>{
 
-    status.innerText = "Opening Camera...";
-    status.className = "status yellow";
+let table=document.getElementById("table")
 
-    fetch("/start_attendance")
-    .then(res => res.json())
-    .then(data => {
+data.attendance.forEach(row=>{
 
-        status.innerText = data.message;
+let tr=document.createElement("tr")
 
-        if (data.message.includes("Successfully"))
-            status.className = "status green";
-        else
-            status.className = "status red";
-    });
-}
+row.forEach(cell=>{
+
+let td=document.createElement("td")
+td.innerText=cell
+
+tr.appendChild(td)
+
+})
+
+table.appendChild(tr)
+
+})
+
+})
+
 </script>
 
 </body>
