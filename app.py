@@ -1,15 +1,16 @@
-from flask import Flask, render_template, jsonify, request, send_file
+from flask import Flask, render_template, request, jsonify
 import csv
 import os
 from datetime import datetime
+import base64
 
 app = Flask(__name__)
 
-CSV_FILE = "attendance.csv"
+CSV_FILE="attendance.csv"
 
 if not os.path.exists(CSV_FILE):
     with open(CSV_FILE,"w",newline="") as f:
-        writer = csv.writer(f)
+        writer=csv.writer(f)
         writer.writerow(["Name","Roll","Date","Time"])
 
 
@@ -18,17 +19,62 @@ def home():
     return render_template("index.html")
 
 
+@app.route("/register_page")
+def register_page():
+    return render_template("register.html")
+
+
+@app.route("/attendance_page")
+def attendance_page():
+    return render_template("attendance.html")
+
+
+@app.route("/table_page")
+def table_page():
+    return render_template("table.html")
+
+
+@app.route("/percentage_page")
+def percentage_page():
+    return render_template("percentage.html")
+
+
+@app.route("/register_user",methods=["POST"])
+def register_user():
+
+    data=request.get_json()
+
+    name=data["name"]
+    roll=data["roll"]
+    image=data["image"]
+
+    img_data=image.split(",")[1]
+
+    img_bytes=base64.b64decode(img_data)
+
+    if not os.path.exists("student_images"):
+        os.mkdir("student_images")
+
+    with open(f"student_images/{name}_{roll}.png","wb") as f:
+        f.write(img_bytes)
+
+    return jsonify({"message":"Student Registered"})
+
+
 @app.route("/mark_attendance",methods=["POST"])
-def mark_attendance():
+def mark():
 
-    name = request.json["name"]
-    roll = request.json["roll"]
+    data=request.get_json()
 
-    date = datetime.now().strftime("%Y-%m-%d")
-    time = datetime.now().strftime("%H:%M:%S")
+    name=data.get("name","Unknown")
+    roll=data.get("roll","0")
+
+    date=datetime.now().strftime("%Y-%m-%d")
+    time=datetime.now().strftime("%H:%M:%S")
 
     with open(CSV_FILE,"a",newline="") as f:
-        writer = csv.writer(f)
+
+        writer=csv.writer(f)
         writer.writerow([name,roll,date,time])
 
     return jsonify({"message":"Attendance Marked"})
@@ -40,6 +86,7 @@ def get_attendance():
     data=[]
 
     with open(CSV_FILE,"r") as f:
+
         reader=csv.reader(f)
         next(reader)
 
@@ -47,21 +94,6 @@ def get_attendance():
             data.append(row)
 
     return jsonify({"attendance":data})
-
-
-@app.route("/download")
-def download():
-    return send_file(CSV_FILE,as_attachment=True)
-
-
-@app.route("/attendance_page")
-def attendance_page():
-    return render_template("attendance.html")
-
-
-@app.route("/percentage_page")
-def percentage_page():
-    return render_template("percentage.html")
 
 
 @app.route("/percentage")
