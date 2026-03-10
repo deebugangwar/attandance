@@ -1,46 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register Student</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+<h2>Register Student</h2>
 
-<div class="main-container">
-    <h2>Register Student</h2>
+<input id="name" placeholder="Name">
+<input id="roll" placeholder="Roll">
 
-    <input type="text" id="name" placeholder="Enter Name">
-    <input type="text" id="roll" placeholder="Enter Roll Number">
-    <button onclick="registerUser()">Register</button>
+<video id="video" width="400" autoplay></video>
 
-    <p id="status" class="status"></p>
+<button onclick="startCamera('video')">Start Camera</button>
+<button onclick="register()">Register</button>
 
-    <br>
-    <a href="/"><button>Back to Home</button></a>
-</div>
+<canvas id="canvas" width="400" height="300" style="display:none"></canvas>
 
 <script>
-function registerUser() {
 
-    let name = document.getElementById("name").value;
-    let roll = document.getElementById("roll").value;
-    let status = document.getElementById("status");
+function register(){
 
-    status.innerText = "Opening Camera...";
-    status.className = "status yellow";
+let canvas=document.getElementById("canvas")
+let ctx=canvas.getContext("2d")
 
-    fetch(`/register_user?name=${name}&roll=${roll}`)
-    .then(res => res.json())
-    .then(data => {
-        status.innerText = data.message;
-        status.className = "status green";
-    })
-    .catch(err => {
-        status.innerText = "Error!";
-        status.className = "status red";
-    });
+let video=document.getElementById("video")
+
+ctx.drawImage(video,0,0,400,300)
+
+let image=canvas.toDataURL("image/png")
+
+let name=document.getElementById("name").value
+let roll=document.getElementById("roll").value
+
+fetch("/register_user",{
+
+method:"POST",
+headers:{"Content-Type":"application/json"},
+
+body:JSON.stringify({
+name:name,
+roll:roll,
+image:image
+})
+
+})
+.then(res=>res.json())
+.then(data=>alert(data.message))
+
 }
-</script>
 
-</body>
-</html>
+</script>
