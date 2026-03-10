@@ -1,75 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Attendance List</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+<h2>Attendance Table</h2>
 
-<div class="main-container">
+<table border="1" id="table">
 
-<h2>Attendance List</h2>
+<tr>
+<th>Name</th>
+<th>Roll</th>
+<th>Date</th>
+<th>Time</th>
+</tr>
 
-<button onclick="loadAttendance('today')">Today Attendance</button>
-<button onclick="loadAttendance('total')">Total Attendance</button>
-
-<br><br>
-
-<table id="attendanceTable">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Roll</th>
-            <th>Date</th>
-            <th>Time</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
 </table>
-
-<br>
-<a href="/download_csv">
-    <button>Download CSV</button>
-</a>
-
-<br><br>
-<a href="/"><button>Back to Home</button></a>
-
-</div>
 
 <script>
 
-function loadAttendance(type) {
+fetch("/get_attendance")
+.then(res=>res.json())
+.then(data=>{
 
-    fetch(`/get_attendance?type=${type}`)
-    .then(res => res.json())
-    .then(data => {
+let table=document.getElementById("table")
 
-        let tableBody = document.querySelector("#attendanceTable tbody");
-        tableBody.innerHTML = "";
+data.attendance.forEach(row=>{
 
-        data.attendance.forEach(row => {
+let tr=document.createElement("tr")
 
-            let tr = document.createElement("tr");
+row.forEach(col=>{
 
-            row.forEach(cell => {
-                let td = document.createElement("td");
-                td.innerText = cell;
-                tr.appendChild(td);
-            });
+let td=document.createElement("td")
+td.innerText=col
+tr.appendChild(td)
 
-            tableBody.appendChild(tr);
-        });
+})
 
-    });
-}
+table.appendChild(tr)
 
+})
 
-window.onload = function() {
-    loadAttendance('today');
-}
+})
 
 </script>
-
-</body>
-</html>
