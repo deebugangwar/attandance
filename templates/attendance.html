@@ -1,53 +1,34 @@
-<!DOCTYPE html>
-<html>
+<h2>Mark Attendance</h2>
 
-<body>
+<input id="name" placeholder="Name">
+<input id="roll" placeholder="Roll">
 
-<h2>Attendance Table</h2>
+<video id="video" width="400" autoplay></video>
 
-<table border="1" id="table">
-
-<tr>
-<th>Name</th>
-<th>Roll</th>
-<th>Date</th>
-<th>Time</th>
-</tr>
-
-</table>
-
-<br>
-
-<a href="/download">Download CSV</a>
+<button onclick="startCamera('video')">Start Camera</button>
+<button onclick="mark()">Mark Attendance</button>
 
 <script>
 
-fetch("/get_attendance")
+function mark(){
+
+let name=document.getElementById("name").value
+let roll=document.getElementById("roll").value
+
+fetch("/mark_attendance",{
+
+method:"POST",
+headers:{"Content-Type":"application/json"},
+
+body:JSON.stringify({
+name:name,
+roll:roll
+})
+
+})
 .then(res=>res.json())
-.then(data=>{
+.then(data=>alert(data.message))
 
-let table=document.getElementById("table")
-
-data.attendance.forEach(row=>{
-
-let tr=document.createElement("tr")
-
-row.forEach(cell=>{
-
-let td=document.createElement("td")
-td.innerText=cell
-
-tr.appendChild(td)
-
-})
-
-table.appendChild(tr)
-
-})
-
-})
+}
 
 </script>
-
-</body>
-</html>
