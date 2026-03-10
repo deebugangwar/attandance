@@ -1,4 +1,5 @@
 flask
 pandas
-opencv-python
 numpy
+opencv-python
+gunicorn
